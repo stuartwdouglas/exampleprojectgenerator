@@ -7,7 +7,6 @@
     <parent>
         <groupId>io.quarkus.generator</groupId>
         <artifactId>example-project-generator</artifactId>
-        <relativePath>../</relativePath>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
