@@ -1,13 +1,8 @@
 package io.quarkus.generator.maven;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateExceptionHandler;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -16,9 +11,17 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateExceptionHandler;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Mojo(name = "run", defaultPhase = LifecyclePhase.PROCESS_CLASSES)
 public class GeneratorMojo extends AbstractMojo {
@@ -47,8 +50,6 @@ public class GeneratorMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        File output = new File(generatedSourcesDirectory, "com" + File.separator + "test" + File.separator);
-        output.mkdirs();
         project.addCompileSourceRoot(generatedSourcesDirectory.getAbsolutePath());
         try {
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_26);
@@ -60,9 +61,15 @@ public class GeneratorMojo extends AbstractMojo {
             for (String template : templates) {
                 String baseName = template.substring(0, template.lastIndexOf('.'));
 
+                byte[] data = Files.readAllBytes(new File(templatesDir, template).toPath());
+                Matcher matcher = Pattern.compile("package (.*);").matcher(new String(data, StandardCharsets.UTF_8));
+                matcher.find();
+                File output = new File(generatedSourcesDirectory, matcher.group(1).replace(".", File.separator));
+                output.mkdirs();
                 for (int i = 0; i < copies; ++i) {
                     Map root = new HashMap();
                     root.put("no", "" + i);
+
 
                     /* Get the template (uses cache internally) */
                     Template temp = cfg.getTemplate(template);
