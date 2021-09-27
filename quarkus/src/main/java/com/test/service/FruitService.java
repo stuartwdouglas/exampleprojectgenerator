@@ -25,6 +25,7 @@ public class FruitService {
         entityManager.remove(fruit);
     }
 
+    @SuppressWarnings("unchecked")
     public List<Fruit> list() {
         return entityManager.createQuery("from Fruit").getResultList();
     }
