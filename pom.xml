@@ -18,7 +18,6 @@
     <modules>
         <module>maven</module>
         <module>quarkus</module>
-        <module>demo</module>
     </modules>
 
     <properties>
