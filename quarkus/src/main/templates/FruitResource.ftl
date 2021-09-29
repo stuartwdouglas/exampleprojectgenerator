@@ -38,7 +38,7 @@ public class FruitResource${no} {
 
     @DELETE
     @Path("{id}")
-    public Response delete(int id) {
+    public Response delete(@PathParam("id") int id) {
         fruitService.delete(fruitService.find(id));
         return Response.noContent().build();
     }

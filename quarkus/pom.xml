@@ -45,7 +45,7 @@
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy</artifactId>
+            <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -79,16 +79,31 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
+                        <configuration>
+                            <templates>
+                                <param>Fruit.ftl</param>
+                                <param>FruitResource.ftl</param>
+                                <param>FruitService.ftl</param>
+                            </templates>
+                            <copies>1000</copies>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <id>gen-test</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <generatedSourcesDirectory>${project.build.directory}/generated-test-sources</generatedSourcesDirectory>
+                            <test>true</test>
+                            <templates>
+                                <param>FruitEndpointTest.ftl</param>
+                            </templates>
+                            <copies>1000</copies>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <templates>
-                        <param>Fruit.ftl</param>
-                        <param>FruitResource.ftl</param>
-                        <param>FruitService.ftl</param>
-                    </templates>
-                    <copies>${classes}</copies>
-                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

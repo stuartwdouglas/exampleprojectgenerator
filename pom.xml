@@ -18,10 +18,11 @@
     <modules>
         <module>maven</module>
         <module>quarkus</module>
+        <module>demo</module>
     </modules>
 
     <properties>
-            <classes>1000</classes>
+            <classes>100</classes>
     </properties>
 
 

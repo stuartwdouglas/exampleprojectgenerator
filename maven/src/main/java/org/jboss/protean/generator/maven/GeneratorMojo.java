@@ -26,6 +26,8 @@ import java.util.regex.Pattern;
 @Mojo(name = "run", defaultPhase = LifecyclePhase.PROCESS_CLASSES)
 public class GeneratorMojo extends AbstractMojo {
 
+    @Parameter(defaultValue = "false")
+    boolean test;
     /**
      * The directory for generated sources.
      */
@@ -50,7 +52,11 @@ public class GeneratorMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        project.addCompileSourceRoot(generatedSourcesDirectory.getAbsolutePath());
+        if (test) {
+            project.addTestCompileSourceRoot(generatedSourcesDirectory.getAbsolutePath());
+        } else {
+            project.addCompileSourceRoot(generatedSourcesDirectory.getAbsolutePath());
+        }
         try {
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_26);
             cfg.setDirectoryForTemplateLoading(templatesDir);
